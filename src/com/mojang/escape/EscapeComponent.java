@@ -2,6 +2,10 @@ package com.mojang.escape;
 
 import java.awt.Canvas;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
@@ -16,8 +20,11 @@ public class EscapeComponent extends Canvas implements Runnable {
 	
 	private boolean running;
 	private Thread thread;
-
+	
+	private Game game;
 	private Screen screen;
+	private BufferedImage img;
+	private int[] pixels;
 	
 	public EscapeComponent() {		
 		Dimension size = new Dimension(WIDTH*SCALE, HEIGHT*SCALE);
@@ -25,7 +32,11 @@ public class EscapeComponent extends Canvas implements Runnable {
 		setMinimumSize(size);
 		setMaximumSize(size);
 		
+		game = new Game();
 		screen = new Screen(WIDTH, HEIGHT);
+		
+		img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
 	}
 	
 	public synchronized void start() {
@@ -56,10 +67,28 @@ public class EscapeComponent extends Canvas implements Runnable {
 	}
 	
 	private void tick() {
+		game.tick();
 		
 	}
 
 	private void render() {
+		BufferStrategy bs = getBufferStrategy();
+		if (bs == null) {
+			createBufferStrategy(3);
+			return;
+			
+		}
+			
+		screen.render(game);
+		
+		for (int i = 0; i < WIDTH * HEIGHT; i++) {
+			pixels[i] = screen.pixels[i];			
+		}
+		
+		Graphics g = bs.getDrawGraphics();
+		g.drawImage(img,0,0, WIDTH*SCALE, HEIGHT*SCALE, null);
+		g.dispose();
+		bs.show();
 		
 	}
 
