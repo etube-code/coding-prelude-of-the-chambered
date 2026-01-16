@@ -14,12 +14,17 @@ public class Bitmap {
 	public void draw(Bitmap bitmap, int xOffs, int yOffs) {
 		for (int y = 0; y<bitmap.height; y++) {
 			int yPix=y+yOffs;
-			if (yPix<0 || yPix>=height) continue;
+			if (yPix<0 || yPix>=height) 
+				continue;
+			
 			for (int x = 0; x<bitmap.width; x++) {
 				int xPix=x+xOffs;
-				if (xPix<0 || xPix>=width) continue;
+				if (xPix<0 || xPix>=width) 
+					continue;
 				
-				pixels[xPix+yPix*width] = bitmap.pixels[x+y*bitmap.width];
+				int src = bitmap.pixels[x+y*bitmap.width];		
+				if(src > 0)
+					pixels[xPix+yPix*width] = src;
 			}	
 		}
 	}

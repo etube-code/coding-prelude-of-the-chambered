@@ -1,5 +1,6 @@
 package com.mojang.escape;
 
+import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -8,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import com.mojang.escape.gui.Screen;
 
@@ -96,10 +98,14 @@ public class EscapeComponent extends Canvas implements Runnable {
 		EscapeComponent game = new EscapeComponent();
 		
 		JFrame frame = new JFrame("Escape!");
-		frame.add(game);
+		
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(game, BorderLayout.CENTER);
+		
+		frame.setContentPane(panel);
 		frame.pack();
-		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		
