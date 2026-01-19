@@ -62,9 +62,18 @@ public class EscapeComponent extends Canvas implements Runnable {
 	}
 	
 	public void run() {
+		long lastTime = System.currentTimeMillis();
+		int frames = 0;
 		while (running) {
 			tick();
 			render();
+			frames++;
+			while (System.currentTimeMillis() - lastTime>1000) {
+				System.out.println(frames + "fps");
+				lastTime +=1000;
+				frames=0;
+				
+			}
 		}
 	}
 	

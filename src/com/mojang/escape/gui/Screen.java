@@ -18,14 +18,18 @@ public class Screen extends Bitmap{
 		}
 	}
 
+	int time = 0;
+	
 	public void render(Game game) {
 		for( int i = 0; i < width * height; i++){
 			pixels[i] = 0;
 		}
 		
+		time++;
+		
 		for (int i = 0; i < 100; i++) {
-			int xo = (int) (Math.sin((System.currentTimeMillis() - i * 16) % 2000 / 2000.0*Math.PI*2) * 100);
-			int yo = (int) (Math.cos((System.currentTimeMillis() - i * 16) % 2000 / 2000.0*Math.PI*2) * 60);
+			int xo = (int) (Math.sin((time + i * i)/100.0) * 100);
+			int yo = (int) (Math.cos((time + i * i)/110.0) * 60);
 			draw(testBitmap, (width - 64) / 2 + xo, (height - 64) / 2 + yo);
 		}
 	}
