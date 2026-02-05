@@ -15,42 +15,42 @@ import com.mojang.escape.gui.Screen;
 
 public class EscapeComponent extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
-	
-	private static final int WIDTH=160;
-	private static final int HEIGHT=120;
-	private static final int SCALE=4;
-	
+
+	private static final int WIDTH = 160;
+	private static final int HEIGHT = 120;
+	private static final int SCALE = 4;
+
 	private boolean running;
 	private Thread thread;
-	
+
 	private Game game;
 	private Screen screen;
 	private BufferedImage img;
 	private int[] pixels;
-	
-	public EscapeComponent() {		
-		Dimension size = new Dimension(WIDTH*SCALE, HEIGHT*SCALE);
+
+	public EscapeComponent() {
+		Dimension size = new Dimension(WIDTH * SCALE, HEIGHT * SCALE);
 		setPreferredSize(size);
 		setMinimumSize(size);
 		setMaximumSize(size);
-		
+
 		game = new Game();
 		screen = new Screen(WIDTH, HEIGHT);
-		
+
 		img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
 	}
-	
+
 	public synchronized void start() {
-		if (running) 
+		if (running)
 			return;
 		running = true;
 		thread = new Thread(this);
 		thread.start();
 	}
-	
+
 	public synchronized void stop() {
-		if (!running) 
+		if (!running)
 			return;
 		running = false;
 		try {
@@ -58,28 +58,54 @@ public class EscapeComponent extends Canvas implements Runnable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	public void run() {
-		long lastTime = System.currentTimeMillis();
 		int frames = 0;
+		double unprocessedSeconds = 0;
+		long lastTime = System.nanoTime();
+		double secondsPerTick = 1 / 60.0;
+		int tickCount = 0;
+
 		while (running) {
-			tick();
-			render();
-			frames++;
-			while (System.currentTimeMillis() - lastTime>1000) {
-				System.out.println(frames + "fps");
-				lastTime +=1000;
-				frames=0;
-				
+			long now = System.nanoTime();
+			long passedTime = now - lastTime;
+			lastTime = now;
+			if (passedTime < 0)
+				passedTime = 0;
+			if (passedTime > 100000000)
+				passedTime = 100000000;
+
+			unprocessedSeconds += passedTime / 1000000000.0;
+
+			boolean ticked = false;
+			while (unprocessedSeconds > secondsPerTick) {
+				tick();
+				unprocessedSeconds -= secondsPerTick;
+				ticked = true;
+
+				tickCount++;
+				if (tickCount % 60 == 0) {
+					System.out.println(frames + "fps");
+					lastTime += 1000;
+					frames = 0;
+
+				}
+
 			}
+
+			if (ticked) {
+				render();
+				frames++;
+			}
+
 		}
 	}
-	
+
 	private void tick() {
 		game.tick();
-		
+
 	}
 
 	private void render() {
@@ -87,39 +113,39 @@ public class EscapeComponent extends Canvas implements Runnable {
 		if (bs == null) {
 			createBufferStrategy(3);
 			return;
-			
+
 		}
-			
+
 		screen.render(game);
-		
+
 		for (int i = 0; i < WIDTH * HEIGHT; i++) {
-			pixels[i] = screen.pixels[i];			
+			pixels[i] = screen.pixels[i];
 		}
-		
+
 		Graphics g = bs.getDrawGraphics();
-		g.drawImage(img,0,0, WIDTH*SCALE, HEIGHT*SCALE, null);
+		g.drawImage(img, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
 		g.dispose();
 		bs.show();
-		
+
 	}
 
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 		EscapeComponent game = new EscapeComponent();
-		
+
 		JFrame frame = new JFrame("Escape!");
-		
+
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(game, BorderLayout.CENTER);
-		
+
 		frame.setContentPane(panel);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		
+
 		game.start();
-		
+
 	}
 
 }
