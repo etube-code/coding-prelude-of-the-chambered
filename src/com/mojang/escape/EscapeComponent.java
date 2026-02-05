@@ -95,10 +95,8 @@ public class EscapeComponent extends Canvas implements Runnable {
 
 			}
 
-			if (ticked) {
 				render();
 				frames++;
-			}
 
 		}
 	}

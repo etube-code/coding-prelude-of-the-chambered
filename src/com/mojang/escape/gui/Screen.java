@@ -5,10 +5,17 @@ import java.util.Random;
 import com.mojang.escape.Game;
 
 public class Screen extends Bitmap {
+	private static final int PANEL_HEIGHT = 8 * 3;
 	private Bitmap testBitmap;
+	private Bitmap gamePanel;
+	private Bitmap viewport;
 
 	public Screen(int width, int height) {
 		super(width, height);
+
+		gamePanel = new Bitmap(width, PANEL_HEIGHT);
+
+		viewport = new Bitmap(width, height - PANEL_HEIGHT);
 
 		Random random = new Random();
 		testBitmap = new Bitmap(64, 64);
@@ -26,9 +33,12 @@ public class Screen extends Bitmap {
 		}
 
 		for (int i = 0; i < 100; i++) {
-			int xo = (int) (Math.sin((game.time + i * i) / 100.0) * 100);
-			int yo = (int) (Math.cos((game.time + i * i) / 110.0) * 60);
-			draw(testBitmap, (width - 64) / 2 + xo, (height - 64) / 2 + yo);
+			int xo = (game.time + i * 8) % 400 - 200;
+			int yo = 0;
+			gamePanel.draw(testBitmap, (gamePanel.width - 64) / 2 + xo, (gamePanel.height - 64) / 2 + yo);
 		}
+		
+		draw(viewport, 0, 0);
+		draw(gamePanel, 0, height - PANEL_HEIGHT);
 	}
 }
