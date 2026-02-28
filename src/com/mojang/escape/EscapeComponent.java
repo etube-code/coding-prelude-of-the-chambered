@@ -141,6 +141,7 @@ public class EscapeComponent extends Canvas implements Runnable {
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+		frame.setAlwaysOnTop(true);
 
 		game.start();
 

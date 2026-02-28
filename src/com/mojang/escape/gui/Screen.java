@@ -8,14 +8,14 @@ public class Screen extends Bitmap {
 	private static final int PANEL_HEIGHT = 8 * 3;
 	private Bitmap testBitmap;
 	private Bitmap gamePanel;
-	private Bitmap viewport;
+	private Bitmap3D viewport;
 
 	public Screen(int width, int height) {
 		super(width, height);
 
 		gamePanel = new Bitmap(width, PANEL_HEIGHT);
 
-		viewport = new Bitmap(width, height - PANEL_HEIGHT);
+		viewport = new Bitmap3D(width, height - PANEL_HEIGHT);
 
 		Random random = new Random();
 		testBitmap = new Bitmap(64, 64);
@@ -38,6 +38,7 @@ public class Screen extends Bitmap {
 			gamePanel.draw(testBitmap, (gamePanel.width - 64) / 2 + xo, (gamePanel.height - 64) / 2 + yo);
 		}
 		
+		viewport.renderFloor();
 		draw(viewport, 0, 0);
 		draw(gamePanel, 0, height - PANEL_HEIGHT);
 	}
