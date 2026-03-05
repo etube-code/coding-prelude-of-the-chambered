@@ -9,16 +9,19 @@ public class Bitmap3D extends Bitmap {
 	public void renderFloor() {
 
 		for (int y = 0; y < height; y++) {
-			double yd = y - height / 2;
+			double yd = (y - height / 2.0) / height;
 
-			double z = 100.0 / yd;
+			if (yd == 0)
+				continue;
+
+			double z = 6 / yd;
 
 			for (int x = 0; x < width; x++) {
-				double xd = x - width / 2;
+				double xd = (x - width / 2.0) / height;
 				xd *= z;
 				int xx = (int) (xd) & 15;
 				int zz = (int) (z) & 15;
-				pixels[x + y * width] = xx * 128;
+				pixels[x + y * width] = (xx * 16) | (zz * 16) << 8;
 
 			}
 		}
