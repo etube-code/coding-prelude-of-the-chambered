@@ -95,8 +95,8 @@ public class EscapeComponent extends Canvas implements Runnable {
 
 			}
 
-				render();
-				frames++;
+			render();
+			frames++;
 
 		}
 	}

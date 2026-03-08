@@ -1,27 +1,32 @@
 package com.mojang.escape.gui;
 
+import com.mojang.escape.Art;
+import com.mojang.escape.Game;
+
 public class Bitmap3D extends Bitmap {
 
 	public Bitmap3D(int width, int height) {
 		super(width, height);
 	}
 
-	public void renderFloor() {
+	public void render(Game game) {
 
 		for (int y = 0; y < height; y++) {
-			double yd = (y - height / 2.0) / height;
+			double yd = ((y + 0.5) - height / 2.0) / height;
 
-			if (yd == 0)
-				continue;
+			double z = 2 / yd;
 
-			double z = 6 / yd;
+			if (yd < 0) {
+				z = 4 / -yd;
+			}
 
 			for (int x = 0; x < width; x++) {
 				double xd = (x - width / 2.0) / height;
 				xd *= z;
-				int xx = (int) (xd) & 15;
-				int zz = (int) (z) & 15;
-				pixels[x + y * width] = (xx * 16) | (zz * 16) << 8;
+				int xx = (int) (xd + game.time * 0.1) & 7;
+				int yy = (int) (z + game.time * 0.1) & 7;
+
+				pixels[x + y * width] = Art.floors.pixels[xx + yy * 64];
 
 			}
 		}

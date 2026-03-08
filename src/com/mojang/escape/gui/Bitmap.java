@@ -23,7 +23,7 @@ public class Bitmap {
 					continue;
 
 				int src = bitmap.pixels[x + y * bitmap.width];
-					pixels[xPix + yPix * width] = src;
+				pixels[xPix + yPix * width] = src;
 			}
 		}
 	}
