@@ -11,13 +11,15 @@ public class Bitmap3D extends Bitmap {
 
 	public void render(Game game) {
 
+		double eye = Math.sin(game.time / 10.0) * 2;
+
 		for (int y = 0; y < height; y++) {
 			double yd = ((y + 0.5) - height / 2.0) / height;
 
-			double z = 2 / yd;
+			double z = (4 + eye) / yd;
 
 			if (yd < 0) {
-				z = 4 / -yd;
+				z = (4 - eye) / -yd;
 			}
 
 			for (int x = 0; x < width; x++) {
