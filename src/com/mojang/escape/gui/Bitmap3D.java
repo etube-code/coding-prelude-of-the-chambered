@@ -5,8 +5,12 @@ import com.mojang.escape.Game;
 
 public class Bitmap3D extends Bitmap {
 
+	private double[] zBuffer;
+
 	public Bitmap3D(int width, int height) {
 		super(width, height);
+
+		zBuffer = new double[width * height];
 	}
 
 	public void render(Game game) {
@@ -28,9 +32,33 @@ public class Bitmap3D extends Bitmap {
 				int xx = (int) (xd + game.time * 0.1) & 7;
 				int yy = (int) (z + game.time * 0.1) & 7;
 
+				zBuffer[x + y * width] = z;
 				pixels[x + y * width] = Art.floors.pixels[xx + yy * 64];
 
 			}
 		}
 	}
+
+	public void postProcess() {
+
+		for (int i = 0; i < width * height; i++) {
+			int col = pixels[i];
+			int brightness = (int) (255 - (zBuffer[i] * 7));
+			if (brightness < 0)
+				brightness = 0;
+
+			int r = (col >> 16) & 0xff;
+			int g = (col >> 8) & 0xff;
+			int b = (col) & 0xff;
+
+			r = r * brightness / 255;
+			g = g * brightness / 255;
+			b = b * brightness / 255;
+
+			pixels[i] = r << 16 | g << 8 | b;
+
+		}
+
+	}
+
 }
