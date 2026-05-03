@@ -36,11 +36,19 @@ public class Bitmap3D extends Bitmap {
 			for (int x = 0; x < width; x++) {
 				double xd = (x - width / 2.0) / height;
 				xd *= zd;
-				int xx = (int) (xd * rCos + zd * rSin + xCam) & 7;
-				int yy = (int) (zd * rCos - xd * rSin + yCam) & 7;
+
+				double xx = (xd * rCos + zd * rSin + xCam);
+				double yy = (zd * rCos - xd * rSin + yCam);
+
+				int xPix = (int) (xx);
+				int yPix = (int) (yy);
+				if (xx < 0)
+					xPix--;
+				if (yy < 0)
+					yPix--;
 
 				zBuffer[x + y * width] = zd;
-				pixels[x + y * width] = Art.floors.pixels[xx + yy * 64];
+				pixels[x + y * width] = Art.floors.pixels[(xPix & 7) + (yPix & 7) * 64];
 
 			}
 		}
