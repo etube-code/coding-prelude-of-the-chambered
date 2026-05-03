@@ -15,24 +15,31 @@ public class Bitmap3D extends Bitmap {
 
 	public void render(Game game) {
 
-		double eye = Math.sin(game.time / 10.0) * 2;
+		double xCam = game.time / 10.0;
+		double yCam = 0;
+		double zCam = 0;
+
+		double rot = game.time / 100.0;
+
+		double rCos = Math.cos(rot);
+		double rSin = Math.sin(rot);
 
 		for (int y = 0; y < height; y++) {
 			double yd = ((y + 0.5) - height / 2.0) / height;
 
-			double z = (4 + eye) / yd;
+			double zd = (4 + zCam) / yd;
 
 			if (yd < 0) {
-				z = (4 - eye) / -yd;
+				zd = (4 - zCam) / -yd;
 			}
 
 			for (int x = 0; x < width; x++) {
 				double xd = (x - width / 2.0) / height;
-				xd *= z;
-				int xx = (int) (xd + game.time * 0.1) & 7;
-				int yy = (int) (z + game.time * 0.1) & 7;
+				xd *= zd;
+				int xx = (int) (xd * rCos + zd * rSin + xCam) & 7;
+				int yy = (int) (zd * rCos - xd * rSin + yCam) & 7;
 
-				zBuffer[x + y * width] = z;
+				zBuffer[x + y * width] = zd;
 				pixels[x + y * width] = Art.floors.pixels[xx + yy * 64];
 
 			}
