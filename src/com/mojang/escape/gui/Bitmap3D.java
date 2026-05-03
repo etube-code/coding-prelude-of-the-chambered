@@ -43,9 +43,11 @@ public class Bitmap3D extends Bitmap {
 
 		for (int i = 0; i < width * height; i++) {
 			int col = pixels[i];
-			int brightness = (int) (255 - (zBuffer[i] * 7));
+			int brightness = (int) (20000 / (zBuffer[i] * zBuffer[i]));
 			if (brightness < 0)
 				brightness = 0;
+			if (brightness > 255)
+				brightness = 255;
 
 			int r = (col >> 16) & 0xff;
 			int g = (col >> 8) & 0xff;
