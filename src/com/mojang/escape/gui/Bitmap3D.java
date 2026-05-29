@@ -17,8 +17,8 @@ public class Bitmap3D extends Bitmap {
 
 	public void render(Game game) {
 
-		double xCam = 3.5;
-		double yCam = 0;
+		double xCam = 0;
+		double yCam = game.time % 100 / 100.0;
 		double zCam = 0;
 
 		double rot = 0;
@@ -29,18 +29,18 @@ public class Bitmap3D extends Bitmap {
 		for (int y = 0; y < height; y++) {
 			double yd = ((y + 0.5) - height / 2.0) / height;
 
-			double zd = (2 + zCam) / yd;
+			double zd = (4 + zCam) / yd;
 
 			if (yd < 0) {
-				zd = (2 - zCam) / -yd;
+				zd = (4 - zCam) / -yd;
 			}
 
 			for (int x = 0; x < width; x++) {
 				double xd = (x - width / 2.0) / height;
 				xd *= zd;
 
-				double xx = (xd * rCos + zd * rSin + xCam);
-				double yy = (zd * rCos - xd * rSin + yCam);
+				double xx = (xd * rCos + zd * rSin + (xCam + 0.5) * 8);
+				double yy = (zd * rCos - xd * rSin + (yCam) * 8);
 
 				int xPix = (int) (xx);
 				int yPix = (int) (yy);
@@ -59,7 +59,7 @@ public class Bitmap3D extends Bitmap {
 		for (int i = 0; i < 1000; i++) {
 			double xx = random.nextDouble() * 2 - 1;
 			double yy = random.nextDouble() * 2 - 1;
-			double zz = 2;
+			double zz = 2 - yCam;
 			int xPixel = (int) (xx / zz * height / 2 + width / 2);
 			int yPixel = (int) (yy / zz * height / 2 + height / 2);
 			if (xPixel >= 0 && yPixel >= 0 && xPixel < width && yPixel < height) {
