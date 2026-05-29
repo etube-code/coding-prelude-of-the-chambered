@@ -17,16 +17,16 @@ public class Bitmap3D extends Bitmap {
 
 	public void render(Game game) {
 
-		double xCam = game.time % 100 * 0.01;
-		double yCam = -1 + game.time % 100 * 0.01 ;
+		double xCam = 0;
+		double yCam = -1 + game.time % 100 * 0.01;
 		double zCam = 0;
 
-		double rot = Math.sin(game.time / 40.0) * 0.0;
+		double rot = Math.sin(game.time / 40.0) * 0.5;
 
 		double rCos = Math.cos(rot);
 		double rSin = Math.sin(rot);
 		
-		double fov = height/2;
+		double fov = height;
 
 		for (int y = 0; y < height; y++) {
 			double yd = ((y + 0.5) - height / 2.0) / fov;
@@ -42,7 +42,7 @@ public class Bitmap3D extends Bitmap {
 				xd *= zd;
 
 				double xx = xd * rCos + zd * rSin + (xCam + 0.5) * 8;
-				double yy = zd * rCos - xd * rSin + (yCam) * 8;
+				double yy = zd * rCos - xd * rSin + (yCam + 0.5) * 8;
 
 				int xPix = (int) (xx);
 				int yPix = (int) (yy);
@@ -61,7 +61,7 @@ public class Bitmap3D extends Bitmap {
 		for (int i = 0; i < 1000; i++) {
 			double x = random.nextDouble() * 2 - 1 - xCam * 2;
 			double z = random.nextDouble() * 2 - 1 - zCam * 2;
-			double y = 1 - yCam;
+			double y = (1 + 0.5 - yCam) * 2;
 
 			double xx = x * rCos - y * rSin;
 			double yy = z;
@@ -83,7 +83,7 @@ public class Bitmap3D extends Bitmap {
 
 		for (int i = 0; i < width * height; i++) {
 			int col = pixels[i];
-			int brightness = (int) (5000 / (zBuffer[i] * zBuffer[i]));
+			int brightness = (int) (15000 / (zBuffer[i] * zBuffer[i]));
 			if (brightness < 0)
 				brightness = 0;
 			if (brightness > 255)
