@@ -1,13 +1,12 @@
 package com.mojang.escape.gui;
 
-import java.util.Random;
-
 import com.mojang.escape.Art;
 import com.mojang.escape.Game;
 
 public class Bitmap3D extends Bitmap {
 
 	private double[] zBuffer;
+	private double xCam, yCam, zCam, rCos, rSin, fov;
 
 	public Bitmap3D(int width, int height) {
 		super(width, height);
@@ -17,16 +16,16 @@ public class Bitmap3D extends Bitmap {
 
 	public void render(Game game) {
 
-		double xCam = 0;
-		double yCam = -1 + game.time % 100 * 0.01;
-		double zCam = 0;
+		xCam = 0;
+		yCam = -1 + game.time % 100 * 0.01;
+		zCam = 0;
 
 		double rot = Math.sin(game.time / 40.0) * 0.5;
 
-		double rCos = Math.cos(rot);
-		double rSin = Math.sin(rot);
-		
-		double fov = height;
+		rCos = Math.cos(rot);
+		rSin = Math.sin(rot);
+
+		fov = height;
 
 		for (int y = 0; y < height; y++) {
 			double yd = ((y + 0.5) - height / 2.0) / fov;
@@ -57,11 +56,15 @@ public class Bitmap3D extends Bitmap {
 			}
 		}
 
-		Random random = new Random(100);
+		renderWall(-1, 2, 2, 2);
+
+	}
+
+	private void renderWall(double x0, double y0, double x1, double y1) {
 		for (int i = 0; i < 1000; i++) {
-			double x = random.nextDouble() * 2 - 1 - xCam * 2;
-			double z = random.nextDouble() * 2 - 1 - zCam * 2;
-			double y = (1 + 0.5 - yCam) * 2;
+			double x = ((x0 + (x1 - x0) * i / 1000 - 0.5) - xCam) * 2;
+			double y = ((y0 + (y1 - y0) * i / 1000 - 0.5) - yCam) * 2;
+			double z = (-0.5 - zCam) * 2;
 
 			double xx = x * rCos - y * rSin;
 			double yy = z;
@@ -73,7 +76,7 @@ public class Bitmap3D extends Bitmap {
 				int yPixel = (int) (yy / zz * fov + height / 2);
 				if (xPixel >= 0 && yPixel >= 0 && xPixel < width && yPixel < height) {
 					zBuffer[xPixel + yPixel * width] = zz * 4;
-					pixels[xPixel + yPixel * width] = 0xffffff;
+					pixels[xPixel + yPixel * width] = 0xff00ff;
 				}
 			}
 		}
