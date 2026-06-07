@@ -61,7 +61,7 @@ public class Bitmap3D extends Bitmap {
 	}
 
 	private void renderWall(double x0, double y0, double x1, double y1) {
-		
+
 		double xc0 = ((x0 - 0.5) - xCam) * 2;
 		double yc0 = ((y0 - 0.5) - yCam) * 2;
 
@@ -69,7 +69,7 @@ public class Bitmap3D extends Bitmap {
 		double u0 = ((-0.5) - zCam) * 2;
 		double l0 = ((+0.5) - zCam) * 2;
 		double zz0 = yc0 * rCos + xc0 * rSin;
-		
+
 		double xc1 = ((x1 - 0.5) - xCam) * 2;
 		double yc1 = ((y1 - 0.5) - yCam) * 2;
 
@@ -77,41 +77,38 @@ public class Bitmap3D extends Bitmap {
 		double u1 = ((-0.5) - zCam) * 2;
 		double l1 = ((+0.5) - zCam) * 2;
 		double zz1 = yc1 * rCos + xc1 * rSin;
-		
+
 		double xPixel0 = (xx0 / zz0 * fov + width / 2);
 		double xPixel1 = (xx1 / zz1 * fov + width / 2);
-		
-		if(xPixel0>=xPixel1) return;
-		
+
+		if (xPixel0 >= xPixel1)
+			return;
+
 		int xp0 = (int) Math.floor(xPixel0);
 		int xp1 = (int) Math.floor(xPixel1);
-		
-		if(xp0<0) xp0 = 0;
-		if(xp1>width) xp1 = width;		
-		
-		for(int x = xp0; x<xp1; x++) {
-			
-			pixels[x+60*width] = 0xff00ff;
-			zBuffer[x+60*width] = 0;
-			
-			
-			
-		}
-		
-		
-	/*	for (int i = 0; i < 1000; i++) {
 
+		if (xp0 < 0)
+			xp0 = 0;
+		if (xp1 > width)
+			xp1 = width;
 
-			if (zz > 0) {
+		for (int x = xp0; x < xp1; x++) {
+			double pr = (x - xPixel0) / (xPixel1 - xPixel0);
 
-				int xPixel = (int) (xx / zz * fov + width / 2);
-				int yPixel = (int) (yy / zz * fov + height / 2);
-				if (xPixel >= 0 && yPixel >= 0 && xPixel < width && yPixel < height) {
-					zBuffer[xPixel + yPixel * width] = zz * 4;
-					pixels[xPixel + yPixel * width] = 0xff00ff;
-				}
+			double u = u0 + (u1 - u0) * pr;
+			double l = l0 + (l1 - l0) * pr;
+			double zz = zz0 + (zz1 - zz0) * pr;
+
+			int yPixel = (int) (u / zz * fov + height / 2);
+
+			if (yPixel > 0 && yPixel < height) {
+				pixels[x + yPixel * width] = 0xff00ff;
+				zBuffer[x + yPixel * width] = 0;
+
 			}
-		}*/
+
+		}
+
 	}
 
 	public void postProcess() {
